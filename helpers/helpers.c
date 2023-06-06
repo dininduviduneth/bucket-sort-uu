@@ -60,3 +60,47 @@ void read_file(char *input_path, ArrayData *array_data)
 
     fclose(input_file);
 }
+
+BucketData *bucket_split(ArrayData *array_data, double min_val, double max_val, int bucket_count) {
+    BucketData *bucket_data = malloc(sizeof(BucketData));
+
+    double bucket_length = (max_val - min_val) / bucket_count;
+    int elements_per_bucket = (array_data->array_size / bucket_count) + 1;
+
+    // Creating an array of buckets
+    double **buckets = (double **)malloc(bucket_count * sizeof(double *));
+    int bucket_limit[bucket_count];
+    int *bucket_filled_count = malloc(bucket_count * sizeof(int));
+
+    // Assign the elements per bucket
+    for (int i = 0; i < bucket_count; i++) {
+        bucket_limit[i] = elements_per_bucket;
+        bucket_filled_count[i] = 0;
+    }
+
+    for(int i = 0; i < bucket_count; i++) {
+        buckets[i] = (double *)malloc(elements_per_bucket * sizeof(double));
+    }
+
+    // Send values to buckets
+    for(int i = 0; i < array_data->array_size; i++) {
+        int target_bucket_id = (array_data->array[i] - min_val) / bucket_length;
+
+        if(target_bucket_id == bucket_count) {
+            target_bucket_id--;
+        }
+        
+        if(bucket_filled_count[target_bucket_id] > bucket_limit[target_bucket_id]) {
+            bucket_limit[target_bucket_id] += elements_per_bucket;
+            buckets[target_bucket_id] = (double *)realloc(buckets[target_bucket_id], bucket_limit[target_bucket_id] * sizeof(double));
+        }
+
+        buckets[target_bucket_id][bucket_filled_count[target_bucket_id]] = array_data->array[i];
+        bucket_filled_count[target_bucket_id]++;
+    }
+
+    bucket_data->bucket_filled_count = bucket_filled_count;
+    bucket_data->buckets = buckets;
+
+    return bucket_data;
+}
