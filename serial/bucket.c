@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     for(int i = 0; i < array_data->array_size; i++) {
         printf("%f ", array_data->array[i]);
     }
-    printf("\n");
+    printf("\n\n");
 
     printf("Array size is: %d\n", array_data->array_size);
 
@@ -40,11 +40,12 @@ int main(int argc, char *argv[]) {
             max_val = array_data->array[i];
         }
     }
-    printf("Min value: %f, Max value: %f\n", min_val, max_val);
+    printf("Min value: %f, Max value: %f\n\n", min_val, max_val);
     /* END - Identifying the min and max values of the array */
 
     BucketData *bucket_data = bucket_split(array_data, min_val, max_val, 8);
-
+    
+    printf("BEFORE QUICK SORT: \n");
     for(int i = 0; i < 8; i++) {
         printf("Split %d: ", i + 1);
         for(int j = 0; j < bucket_data->bucket_filled_count[i]; j++) {
@@ -52,6 +53,29 @@ int main(int argc, char *argv[]) {
         }
         printf("\n");
     }
+    printf("\n");
+
+    for(int i = 0; i < 8; i++) {
+        quicksort(bucket_data->buckets[i], 0, bucket_data->bucket_filled_count[i] - 1);
+    }
+
+    printf("AFTER QUICK SORT: \n");
+    for(int i = 0; i < 8; i++) {
+        printf("Split %d: ", i + 1);
+        for(int j = 0; j < bucket_data->bucket_filled_count[i]; j++) {
+            printf("%f ", bucket_data->buckets[i][j]);
+        }
+        printf("\n\n");
+    }
+
+    merge_buckets(bucket_data, array_data);
+    printf("\n");
+
+    printf("Sorted array: ");
+    for(int i = 0; i < array_data->array_size; i++) {
+        printf("%f ", array_data->array[i]);
+    }
+    printf("\n");
 
     generate_file(array_data->array, array_data->array_size, "result.bin");
 
