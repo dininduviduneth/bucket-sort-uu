@@ -14,6 +14,19 @@ void generate_uniform_array(double min, double max, double numbers[], int array_
     }
 }
 
+void generate_normal_array(double min, double max, double numbers[], int array_length) {
+    double mean = min + (max - min) / 2;
+    double stdev = (max - min) / 6;
+    for(int i = 0; i < array_length; i++) {
+        double u1 = rand() / (RAND_MAX + 1.0);
+        double u2 = rand() / (RAND_MAX + 1.0);
+
+        double n = sqrt(-2.0 * log(u1)) * cos(2.0 * M_PI * u2);
+        double normal_value = mean + stdev * n;
+        numbers[i] = normal_value;
+    }
+}
+
 void generate_file(double *arr, int array_length, char *output_path)
 {
     FILE *output_file = fopen(output_path, "wb");
