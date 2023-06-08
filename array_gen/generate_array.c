@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     srand(10);
 
     double numbers[array_length];
-    generate_uniform_array(-100, 100, numbers, array_length);
+    generate_uniform_array(-10000, 10000, numbers, array_length);
 
     for(int i = 0; i < array_length; i++) {
         printf("%f ", numbers[i]);

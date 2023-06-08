@@ -21,5 +21,6 @@ BucketData *bucket_split(ArrayData *array_data, double min_val, double max_val, 
 void quicksort(double *arr, int start_index, int end_index);
 void swap_numbers(double *num1, double *num2);
 void merge_buckets(BucketData *bucket_data, ArrayData *array_data);
+double get_wall_seconds();
 
 #endif

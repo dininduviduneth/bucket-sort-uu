@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <sys/time.h>
 
 // helpers
 #include "helpers.h"
@@ -170,4 +171,11 @@ void merge_buckets(BucketData *bucket_data, ArrayData *array_data) {
     } else {
         printf("There was an error in merging! Last write point: %d\n", array_write_pointer);
     }
+}
+
+double get_wall_seconds() {
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  double seconds = tv.tv_sec + (double)tv.tv_usec / 1000000;
+  return seconds;
 }
