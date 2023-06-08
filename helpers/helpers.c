@@ -27,6 +27,17 @@ void generate_normal_array(double min, double max, double numbers[], int array_l
     }
 }
 
+void generate_exponential_array(double min, double max, double numbers[], int array_length) {
+    double lambda = 1 / (max - min);
+
+    for(int i = 0; i < array_length; i++) {
+        double u = rand() / (RAND_MAX + 1.0);
+
+        double exponential_value = -log(1 - u) / lambda;
+        numbers[i] = exponential_value;
+    }
+}
+
 void generate_file(double *arr, int array_length, char *output_path)
 {
     FILE *output_file = fopen(output_path, "wb");

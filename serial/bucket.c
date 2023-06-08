@@ -29,10 +29,10 @@ int main(int argc, char *argv[]) {
     double read_file_end_time = get_wall_seconds();
 
     // PRINT LOADED ARRAY
-    for(int i = 0; i < array_data->array_size; i++) {
-        printf("%f ", array_data->array[i]);
-    }
-    printf("\n\n");
+    // for(int i = 0; i < array_data->array_size; i++) {
+    //     printf("%f ", array_data->array[i]);
+    // }
+    // printf("\n\n");
 
     printf("Array size is: %d\n", array_data->array_size);
 
@@ -57,15 +57,15 @@ int main(int argc, char *argv[]) {
     /* END - Splitting the numbers into buckets */
     
     // PRINT BUCKETS BEFORE QUICK SORT
-    printf("BEFORE QUICK SORT: \n");
-    for(int i = 0; i < 8; i++) {
-        printf("Split %d: ", i + 1);
-        for(int j = 0; j < bucket_data->bucket_filled_count[i]; j++) {
-            printf("%f ", bucket_data->buckets[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
+    // printf("BEFORE QUICK SORT: \n");
+    // for(int i = 0; i < 8; i++) {
+    //     printf("Split %d: ", i + 1);
+    //     for(int j = 0; j < bucket_data->bucket_filled_count[i]; j++) {
+    //         printf("%f ", bucket_data->buckets[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+    // printf("\n");
 
     /* START - Running bucket-wise Quick Sort */
     double quicksort_start_time = get_wall_seconds();
@@ -76,14 +76,14 @@ int main(int argc, char *argv[]) {
     /* END - Running bucket-wise Quick Sort */
 
     // PRINT BUCKETS AFTER QUICK SORT
-    printf("AFTER QUICK SORT: \n");
-    for(int i = 0; i < 8; i++) {
-        printf("Split %d: ", i + 1);
-        for(int j = 0; j < bucket_data->bucket_filled_count[i]; j++) {
-            printf("%f ", bucket_data->buckets[i][j]);
-        }
-        printf("\n\n");
-    }
+    // printf("AFTER QUICK SORT: \n");
+    // for(int i = 0; i < 8; i++) {
+    //     printf("Split %d: ", i + 1);
+    //     for(int j = 0; j < bucket_data->bucket_filled_count[i]; j++) {
+    //         printf("%f ", bucket_data->buckets[i][j]);
+    //     }
+    //     printf("\n\n");
+    // }
 
     /* START - Merging buckets to original array */
     double merge_start_time = get_wall_seconds();
@@ -92,12 +92,12 @@ int main(int argc, char *argv[]) {
     /* END - Merging buckets to original array */
 
     // PRINT SORTED ARRAY
-    printf("\n");
-    printf("Sorted array: ");
-    for(int i = 0; i < array_data->array_size; i++) {
-        printf("%f ", array_data->array[i]);
-    }
-    printf("\n");
+    // printf("\n");
+    // printf("Sorted array: ");
+    // for(int i = 0; i < array_data->array_size; i++) {
+    //     printf("%f ", array_data->array[i]);
+    // }
+    // printf("\n");
 
     /* START - Save sorted array in file */
     double save_data_start_time = get_wall_seconds();

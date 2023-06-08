@@ -23,5 +23,6 @@ void swap_numbers(double *num1, double *num2);
 void merge_buckets(BucketData *bucket_data, ArrayData *array_data);
 double get_wall_seconds();
 void generate_normal_array(double min, double max, double numbers[], int array_length);
+void generate_exponential_array(double min, double max, double numbers[], int array_length);
 
 #endif
