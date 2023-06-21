@@ -108,13 +108,13 @@ int main(int argc, char *argv[]) {
 
     // Print time measurements
     printf("\n");
-    printf("Time taken for reading file: %f%%\n", (min_max_end_time - min_max_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("Time taken for min-max identifier: %f%%\n", (read_file_end_time - read_file_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("Time taken for bucket split: %f%%\n", (bucket_split_end_time - bucket_split_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("Time taken for quick sort: %f%%\n", (quicksort_end_time - quicksort_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("Time taken for bucket merge: %f%%\n", (merge_end_time - merge_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("Time taken for saving data to file: %f%%\n", (save_data_end_time - save_data_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("Time aggregation: %f%%\n", ((min_max_end_time - min_max_start_time) + (read_file_end_time - read_file_start_time) + (bucket_split_end_time - bucket_split_start_time) + (quicksort_end_time - quicksort_start_time) + (merge_end_time - merge_start_time) + (save_data_end_time - save_data_start_time)) * 100 / (full_run_end_time - full_run_start_time));
+    printf("%% Time taken for reading file: %f%%\n", (min_max_end_time - min_max_start_time) * 100 / (full_run_end_time - full_run_start_time));
+    printf("%% Time taken for min-max identifier: %f%%\n", (read_file_end_time - read_file_start_time) * 100 / (full_run_end_time - full_run_start_time));
+    printf("%% Time taken for bucket split: %f%%\n", (bucket_split_end_time - bucket_split_start_time) * 100 / (full_run_end_time - full_run_start_time));
+    printf("%% Time taken for quick sort: %f%%\n", (quicksort_end_time - quicksort_start_time) * 100 / (full_run_end_time - full_run_start_time));
+    printf("%% Time taken for bucket merge: %f%%\n", (merge_end_time - merge_start_time) * 100 / (full_run_end_time - full_run_start_time));
+    printf("%% Time taken for saving data to file: %f%%\n", (save_data_end_time - save_data_start_time) * 100 / (full_run_end_time - full_run_start_time));
+    printf("%% Time aggregation: %f%%\n", ((min_max_end_time - min_max_start_time) + (read_file_end_time - read_file_start_time) + (bucket_split_end_time - bucket_split_start_time) + (quicksort_end_time - quicksort_start_time) + (merge_end_time - merge_start_time) + (save_data_end_time - save_data_start_time)) * 100 / (full_run_end_time - full_run_start_time));
     printf("Total time taken: %f seconds\n\n", full_run_end_time - full_run_start_time);
 
     // Free allocated memory in the array

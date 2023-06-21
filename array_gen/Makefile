@@ -14,4 +14,4 @@ generate: generate_array.c
 	rm -f generate_array
 
 clean:
-	rm -f generate_array ARR*
+	rm -f generate_array ../input_data/ARR*
