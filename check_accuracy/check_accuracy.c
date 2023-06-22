@@ -57,14 +57,6 @@ int main(int argc, char *argv[]) {
         printf("Results Sum: %f\n", results_sum);
         printf("Input Sum: %f\n", input_sum);
         printf("Difference: %f\n", results_sum - input_sum);
-
-        // // Free allocated memory in the array
-        // free(results_array_data->array);
-        // free(input_array_data->array);
-        // // Free allocated memory in array_data
-        // free(results_array_data);
-        // free(input_array_data);
-        // return 0;
     }
 
     for(int i = 0; i < results_array_data->array_size - 1; i++) {
@@ -83,7 +75,6 @@ int main(int argc, char *argv[]) {
 
     printf("The results file has perfectly sorted values!\n");
     
-
     // Free allocated memory in the array
     free(results_array_data->array);
     free(input_array_data->array);
