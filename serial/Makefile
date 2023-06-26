@@ -2,7 +2,7 @@ CFLAGS = -Wall -Wextra
 
 generate: bucket.c
 	rm -f bucket
-	gcc $(CFLAGS) -O3 -o bucket bucket.c ../helpers/helpers.c
+	gcc $(CFLAGS) -O3 -o bucket bucket.c ../helpers/helpers.c -lm
 
 clean:
 	rm -f bucket result.bin
