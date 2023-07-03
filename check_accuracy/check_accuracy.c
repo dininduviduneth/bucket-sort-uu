@@ -35,6 +35,8 @@ int main(int argc, char *argv[]) {
     
     if(results_array_data->array_size != input_array_data->array_size) {
         printf("The array sizes doesn't match!\n");
+        printf("Results array size: %d\n", results_array_data->array_size);
+        printf("Input array size: %d\n", input_array_data->array_size);
         
         // Free allocated memory in the array
         free(results_array_data->array);
