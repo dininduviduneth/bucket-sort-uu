@@ -116,7 +116,7 @@ BucketData *bucket_split(ArrayData *array_data, double min_val, double max_val, 
         }
 
         if(bucket_filled_count[target_bucket_id] >= bucket_limit[target_bucket_id]) {
-            bucket_limit[target_bucket_id] += (elements_per_bucket / 8);
+            bucket_limit[target_bucket_id] += (elements_per_bucket / bucket_count);
             buckets[target_bucket_id] = (double *)realloc(buckets[target_bucket_id], bucket_limit[target_bucket_id] * sizeof(double));
         }
 
@@ -167,10 +167,10 @@ void swap_numbers(double *num1, double *num2) {
     *num2 = temp;
 }
 
-void merge_buckets(BucketData *bucket_data, ArrayData *array_data) {
+void merge_buckets(BucketData *bucket_data, ArrayData *array_data, int bucket_count) {
     // Check if original array size and total of bucket item count are matching
     int total_numbers_in_buckets = 0;
-    for(int i = 0; i < 8; i++) {
+    for(int i = 0; i < bucket_count; i++) {
         total_numbers_in_buckets += bucket_data->bucket_filled_count[i];
         printf("Numbers in bucket %d: %d\n", i, bucket_data->bucket_filled_count[i]);
     }
@@ -183,7 +183,7 @@ void merge_buckets(BucketData *bucket_data, ArrayData *array_data) {
     }
 
     int array_write_pointer = 0;
-    for(int i = 0; i < 8; i++) {
+    for(int i = 0; i < bucket_count; i++) {
         for(int j = 0; j < bucket_data->bucket_filled_count[i]; j++) {
             array_data->array[array_write_pointer] = bucket_data->buckets[i][j];
             array_write_pointer++;

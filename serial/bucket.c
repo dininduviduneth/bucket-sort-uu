@@ -6,6 +6,8 @@
 #include "../helpers/helpers.h"
 
 int main(int argc, char *argv[]) {
+
+    int bucket_count = 8;
     /* Validate if the user entered the correct arguments */
     if (argc != 2)
     {
@@ -52,13 +54,13 @@ int main(int argc, char *argv[]) {
 
     /* START - Splitting the numbers into buckets */
     double bucket_split_start_time = get_wall_seconds();
-    BucketData *bucket_data = bucket_split(array_data, min_val, max_val, 8);
+    BucketData *bucket_data = bucket_split(array_data, min_val, max_val, bucket_count);
     double bucket_split_end_time = get_wall_seconds();
     /* END - Splitting the numbers into buckets */
     
     // PRINT BUCKETS BEFORE QUICK SORT
     // printf("BEFORE QUICK SORT: \n");
-    // for(int i = 0; i < 8; i++) {
+    // for(int i = 0; i < bucket_count; i++) {
     //     printf("Split %d: ", i + 1);
     //     for(int j = 0; j < bucket_data->bucket_filled_count[i]; j++) {
     //         printf("%f ", bucket_data->buckets[i][j]);
@@ -69,7 +71,7 @@ int main(int argc, char *argv[]) {
 
     /* START - Running bucket-wise Quick Sort */
     double quicksort_start_time = get_wall_seconds();
-    for(int i = 0; i < 8; i++) {
+    for(int i = 0; i < bucket_count; i++) {
         quicksort(bucket_data->buckets[i], 0, bucket_data->bucket_filled_count[i] - 1);
     }
     double quicksort_end_time = get_wall_seconds();
@@ -77,7 +79,7 @@ int main(int argc, char *argv[]) {
 
     // PRINT BUCKETS AFTER QUICK SORT
     // printf("AFTER QUICK SORT: \n");
-    // for(int i = 0; i < 8; i++) {
+    // for(int i = 0; i < bucket_count; i++) {
     //     printf("Split %d: ", i + 1);
     //     for(int j = 0; j < bucket_data->bucket_filled_count[i]; j++) {
     //         printf("%f ", bucket_data->buckets[i][j]);
@@ -87,7 +89,7 @@ int main(int argc, char *argv[]) {
 
     /* START - Merging buckets to original array */
     double merge_start_time = get_wall_seconds();
-    merge_buckets(bucket_data, array_data);
+    merge_buckets(bucket_data, array_data, bucket_count);
     double merge_end_time = get_wall_seconds();
     /* END - Merging buckets to original array */
 
@@ -123,7 +125,7 @@ int main(int argc, char *argv[]) {
     free(array_data);
 
     // Free memory for each bucket
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < bucket_count; i++) {
         free(bucket_data->buckets[i]);
     }
     // Free memory for the array of buckets
