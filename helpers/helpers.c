@@ -70,7 +70,14 @@ void read_file(char *input_path, ArrayData *array_data)
     }
 
     int array_size;
-    fread(&array_size, sizeof(int), 1, input_file);
+    size_t read_size = fread(&array_size, sizeof(int), 1, input_file);
+
+    if (read_size != 1)
+    {
+        printf("read_file error: failed to read array size.\n");
+        fclose(input_file);
+        return;
+    }
 
     array_data->array_size = array_size;
     array_data->array = (double *)malloc(array_size * sizeof(double));
@@ -81,7 +88,14 @@ void read_file(char *input_path, ArrayData *array_data)
         return;
     }
 
-    fread(array_data->array, sizeof(double), array_data->array_size, input_file);
+    size_t elements_read = fread(array_data->array, sizeof(double), array_data->array_size, input_file);
+
+    if (elements_read != (size_t)array_data->array_size)
+    {
+        printf("read_file error: failed to read array elements.\n");
+        fclose(input_file);
+        return;
+    }
 
     fclose(input_file);
 }

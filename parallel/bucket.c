@@ -41,7 +41,8 @@ int main(int argc, char *argv[]) {
 
     /* START - Identifying the min and max values of the array */
     double min_max_start_time = get_wall_seconds();
-    double min_val, max_val = 0.0;
+    double min_val = 0.0;
+    double max_val = 0.0;
     for(int i = 0; i < array_data->array_size; i++) {
         if(array_data->array[i] < min_val) {
             min_val = array_data->array[i];
