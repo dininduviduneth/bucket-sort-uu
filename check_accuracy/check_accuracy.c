@@ -35,6 +35,8 @@ int main(int argc, char *argv[]) {
     
     if(results_array_data->array_size != input_array_data->array_size) {
         printf("The array sizes doesn't match!\n");
+        printf("Results array size: %d\n", results_array_data->array_size);
+        printf("Input array size: %d\n", input_array_data->array_size);
         
         // Free allocated memory in the array
         free(results_array_data->array);
@@ -54,14 +56,15 @@ int main(int argc, char *argv[]) {
 
     if(fabs(results_sum - input_sum) > 0.000001) {
         printf("The array sums doesn't match!\n");
-        printf("Results Sum: %f\n", results_sum);
-        printf("Input Sum: %f\n", input_sum);
-        printf("Difference: %f\n", results_sum - input_sum);
     }
+    
+    printf("Results Sum: %f\n", results_sum);
+    printf("Input Sum: %f\n", input_sum);
+    printf("Difference: %f\n", results_sum - input_sum);
 
     for(int i = 0; i < results_array_data->array_size - 1; i++) {
         if(results_array_data->array[i + 1] < results_array_data->array[i]) {
-            printf("index[%d] = %f < index[%d] = %f\n", i, results_array_data->array[i], i + 1, results_array_data->array[i + 1]);
+            printf("index[%d] = %f > index[%d] = %f\n", i, results_array_data->array[i], i + 1, results_array_data->array[i + 1]);
             // Free allocated memory in the array
             free(results_array_data->array);
             free(input_array_data->array);
@@ -69,7 +72,7 @@ int main(int argc, char *argv[]) {
             free(results_array_data);
             free(input_array_data);
             
-            break;
+            return 0;
         }
     }
 

@@ -24,11 +24,11 @@ int main(int argc, char *argv[]) {
     double numbers[array_length];
 
     if(distribution[0] == 'U') {
-        generate_uniform_array(-10000, 10000, numbers, array_length);
+        generate_uniform_array(-1 * array_length, array_length, numbers, array_length);
     } else if(distribution[0] == 'N') {
-        generate_normal_array(-10000, 10000, numbers, array_length);
+        generate_normal_array(-1 * array_length, array_length, numbers, array_length);
     } else if(distribution[0] == 'E') {
-        generate_exponential_array(1, 10000, numbers, array_length);
+        generate_exponential_array(1, array_length, numbers, array_length);
     } else {
         printf("Enter a valid distribution. Either U - Uniform, N - Normal or E - Exponential!\n");
         return 0;

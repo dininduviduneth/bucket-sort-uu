@@ -7,16 +7,17 @@
 
 int main(int argc, char *argv[]) {
 
-    int bucket_count = 8;
     /* Validate if the user entered the correct arguments */
-    if (argc != 2)
+    if (argc != 3)
     {
         printf("Incorrect number of arguments!\n");
-        printf("Usage: %s input_path\n", argv[0]);
+        printf("Usage: %s input_path thread_count\n", argv[0]);
         return 0;
     }
 
     char *input_path = argv[1];
+    int thread_count = atoi(argv[2]);
+    int bucket_count = thread_count;
 
     ArrayData *array_data = malloc(sizeof(ArrayData));
     if (array_data == NULL)
@@ -36,7 +37,7 @@ int main(int argc, char *argv[]) {
     // }
     // printf("\n\n");
 
-    printf("Array size is: %d\n", array_data->array_size);
+    // printf("Array size is: %d\n", array_data->array_size);
 
     /* START - Identifying the min and max values of the array */
     double min_max_start_time = get_wall_seconds();
@@ -96,7 +97,7 @@ int main(int argc, char *argv[]) {
 
     // PRINT SORTED ARRAY
     // printf("\n");
-    // printf("Sorted array: ");
+    // printf("Sorted array: \n");
     // for(int i = 0; i < array_data->array_size; i++) {
     //     printf("%f ", array_data->array[i]);
     // }
@@ -135,6 +136,6 @@ int main(int argc, char *argv[]) {
     free(bucket_data->bucket_filled_count);
     // Free memory for the BucketData structure
     free(bucket_data);
-    
+
     return 0;
 }
