@@ -21,7 +21,8 @@ int main(int argc, char *argv[]) {
     // Set up initial seed - to make the number generation consistent
     srand(10);
 
-    double numbers[array_length];
+    // double numbers[array_length];
+    double *numbers = (double *)malloc(array_length * sizeof(double));
 
     printf("Passed this point for array size %d\n", array_length);
 
@@ -42,10 +43,11 @@ int main(int argc, char *argv[]) {
     // }
     // printf("\n");
 
-    int length = sizeof(numbers) / sizeof(numbers[0]);
-    printf("Array size is: %d\n", length);
+    printf("Array size is: %d\n", array_length);
 
     generate_file(numbers, array_length, output_filename);
+
+    free(numbers);
     
     return 0;
 }

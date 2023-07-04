@@ -7,14 +7,14 @@
 // helpers
 #include "helpers.h"
 
-void generate_uniform_array(double min, double max, double numbers[], int array_length) {
+void generate_uniform_array(double min, double max, double *numbers, int array_length) {
     for (int i = 0; i < array_length; i++) {
         double random_value = ((double)rand() / RAND_MAX) * (max - min) + min;
         numbers[i] = random_value;
     }
 }
 
-void generate_normal_array(double min, double max, double numbers[], int array_length) {
+void generate_normal_array(double min, double max, double *numbers, int array_length) {
     double mean = min + (max - min) / 2;
     double stdev = (max - min) / 6;
     for(int i = 0; i < array_length; i++) {
@@ -27,7 +27,7 @@ void generate_normal_array(double min, double max, double numbers[], int array_l
     }
 }
 
-void generate_exponential_array(double min, double max, double numbers[], int array_length) {
+void generate_exponential_array(double min, double max, double *numbers, int array_length) {
     double lambda = 1 / (max - min);
 
     for(int i = 0; i < array_length; i++) {
