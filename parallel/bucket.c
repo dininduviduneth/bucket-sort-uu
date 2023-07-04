@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include <sys/time.h>
+#include <omp.h>
 #include "../helpers/helpers.h"
 
 int main(int argc, char *argv[]) {
@@ -73,6 +74,7 @@ int main(int argc, char *argv[]) {
 
     /* START - Running bucket-wise Quick Sort */
     double quicksort_start_time = get_wall_seconds();
+    #pragma omp parallel for num_threads(bucket_count)
     for(int i = 0; i < bucket_count; i++) {
         quicksort(bucket_data->buckets[i], 0, bucket_data->bucket_filled_count[i] - 1);
     }

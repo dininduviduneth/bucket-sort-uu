@@ -23,6 +23,8 @@ int main(int argc, char *argv[]) {
 
     double numbers[array_length];
 
+    printf("Passed this point for array size %d\n", array_length);
+
     if(distribution[0] == 'U') {
         generate_uniform_array(-1 * array_length, array_length, numbers, array_length);
     } else if(distribution[0] == 'N') {
