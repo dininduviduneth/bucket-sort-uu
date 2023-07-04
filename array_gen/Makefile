@@ -9,9 +9,7 @@ generate: generate_array.c
 	./generate_array 100000 U ARR_U00100000.bin
 	./generate_array 100000 N ARR_N00100000.bin
 	./generate_array 100000 E ARR_E00100000.bin
-	./generate_array 10000000 U ARR_U10000000.bin
-	./generate_array 10000000 N ARR_N10000000.bin
-	./generate_array 10000000 E ARR_E10000000.bin
+	./generate_array 50000000 U ARR_U50000000.bin
 
 	mv -f ARR* ../input_data/
 	rm -f generate_array
