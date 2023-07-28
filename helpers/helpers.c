@@ -101,10 +101,11 @@ void read_file(char *input_path, ArrayData *array_data)
 }
 
 BucketData *bucket_split(ArrayData *array_data, double min_val, double max_val, int bucket_count) {
+    double bucket_count_recip = 1 / ((double)bucket_count);
     BucketData *bucket_data = malloc(sizeof(BucketData));
 
-    double bucket_length = (max_val - min_val) / bucket_count;
-    int elements_per_bucket = (array_data->array_size / bucket_count) + 1;
+    double bucket_length = (max_val - min_val) * bucket_count_recip;
+    int elements_per_bucket = (array_data->array_size * bucket_count_recip) + 1;
 
     // Creating an array of buckets
     double **buckets = (double **)malloc(bucket_count * sizeof(double *));
@@ -113,7 +114,7 @@ BucketData *bucket_split(ArrayData *array_data, double min_val, double max_val, 
 
     // Assign the elements per bucket
     for (int i = 0; i < bucket_count; i++) {
-        bucket_limit[i] = elements_per_bucket;
+        bucket_limit[i] = elements_per_bucket; // Initially we assign the same number of elements for each bucket
         bucket_filled_count[i] = 0;
     }
 
@@ -122,18 +123,23 @@ BucketData *bucket_split(ArrayData *array_data, double min_val, double max_val, 
     }
 
     // Send values to buckets
+    double bucket_length_recip = 1 / ((double)bucket_length);
     for(int i = 0; i < array_data->array_size; i++) {
-        int target_bucket_id = (array_data->array[i] - min_val) / bucket_length;
+        int target_bucket_id = (array_data->array[i] - min_val) * bucket_length_recip;
 
+        // To make the max element fall in to the last bucket
         if(target_bucket_id == bucket_count) {
             target_bucket_id--;
         }
 
+        // If the a bucket is full, we reallocate the bucket to fill more
         if(bucket_filled_count[target_bucket_id] >= bucket_limit[target_bucket_id]) {
-            bucket_limit[target_bucket_id] += (elements_per_bucket / bucket_count);
+            bucket_limit[target_bucket_id] += (elements_per_bucket * bucket_count_recip);
             buckets[target_bucket_id] = (double *)realloc(buckets[target_bucket_id], bucket_limit[target_bucket_id] * sizeof(double));
+            printf("Reallocation had to run for bucket: %d\n", target_bucket_id);
         }
 
+        // Assign the value from the array to the selected position in the selected bucket
         buckets[target_bucket_id][bucket_filled_count[target_bucket_id]] = array_data->array[i];
         bucket_filled_count[target_bucket_id]++;
     }
