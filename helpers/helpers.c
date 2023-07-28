@@ -7,6 +7,9 @@
 // helpers
 #include "helpers.h"
 
+// Change the VERSION to 2 to check the median-of-three pivot selection strategy
+#define VERSION 1
+
 void generate_uniform_array(double min, double max, double *numbers, int array_length) {
     for (int i = 0; i < array_length; i++) {
         double random_value = ((double)rand() / RAND_MAX) * (max - min) + min;
@@ -155,7 +158,32 @@ void quicksort(double *arr, int start_index, int end_index) {
         return;
     }
 
+    #if VERSION == 1
     int pivot_index = start_index + (end_index - start_index) / 2;
+
+    #elif VERSION == 2
+    int pivot_index;
+    int middle_index = start_index + (end_index - start_index) / 2;
+
+    if (arr[start_index] < arr[middle_index]) {
+        if (arr[middle_index] < arr[end_index]) {
+            pivot_index = middle_index;
+        } else if (arr[start_index] < arr[end_index]) {
+            pivot_index = end_index;
+        } else {
+            pivot_index = start_index;
+        }
+    } else {
+        if (arr[start_index] < arr[end_index]) {
+            pivot_index = start_index;
+        } else if (arr[middle_index] < arr[end_index]) {
+            pivot_index = end_index;
+        } else {
+            pivot_index = middle_index;
+        }
+    }
+    #endif
+
     double pivot = arr[pivot_index];
 
     int i = start_index;
