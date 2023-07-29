@@ -25,10 +25,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     
-    double full_run_start_time = get_wall_seconds();
-    double read_file_start_time = get_wall_seconds();
     read_file(input_path, array_data);
-    double read_file_end_time = get_wall_seconds();
 
     // PRINT LOADED ARRAY
     // for(int i = 0; i < array_data->array_size; i++) {
@@ -38,6 +35,7 @@ int main(int argc, char *argv[]) {
 
     printf("Array size is: %d\n", array_data->array_size);
 
+    double bucketsort_start_time = get_wall_seconds();
     /* START - Identifying the min and max values of the array */
     double min_max_start_time = get_wall_seconds();
     double min_val = 0.0;
@@ -93,6 +91,7 @@ int main(int argc, char *argv[]) {
     merge_buckets(bucket_data, array_data, bucket_count);
     double merge_end_time = get_wall_seconds();
     /* END - Merging buckets to original array */
+    double bucketsort_end_time = get_wall_seconds();
 
     // PRINT SORTED ARRAY
     // printf("\n");
@@ -103,22 +102,16 @@ int main(int argc, char *argv[]) {
     // printf("\n");
 
     /* START - Save sorted array in file */
-    double save_data_start_time = get_wall_seconds();
     generate_file(array_data->array, array_data->array_size, "result.bin");
-    double save_data_end_time = get_wall_seconds();
     /* START - Save sorted array in file */
-    double full_run_end_time = get_wall_seconds();
 
     // Print time measurements
     printf("\n");
-    printf("%% Time taken for reading file: %f%%\n", (min_max_end_time - min_max_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("%% Time taken for min-max identifier: %f%%\n", (read_file_end_time - read_file_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("%% Time taken for bucket split: %f%%\n", (bucket_split_end_time - bucket_split_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("%% Time taken for quick sort: %f%%\n", (quicksort_end_time - quicksort_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("%% Time taken for bucket merge: %f%%\n", (merge_end_time - merge_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("%% Time taken for saving data to file: %f%%\n", (save_data_end_time - save_data_start_time) * 100 / (full_run_end_time - full_run_start_time));
-    printf("%% Time aggregation: %f%%\n", ((min_max_end_time - min_max_start_time) + (read_file_end_time - read_file_start_time) + (bucket_split_end_time - bucket_split_start_time) + (quicksort_end_time - quicksort_start_time) + (merge_end_time - merge_start_time) + (save_data_end_time - save_data_start_time)) * 100 / (full_run_end_time - full_run_start_time));
-    printf("Total time taken: %f seconds\n\n", full_run_end_time - full_run_start_time);
+    printf("%% Time taken for min-max identifier: %f seconds, %f%%\n", (min_max_end_time - min_max_start_time), (min_max_end_time - min_max_start_time) * 100 / (bucketsort_end_time - bucketsort_start_time));
+    printf("%% Time taken for bucket split: %f seconds, %f%%\n", (bucket_split_end_time - bucket_split_start_time), (bucket_split_end_time - bucket_split_start_time) * 100 / (bucketsort_end_time - bucketsort_start_time));
+    printf("%% Time taken for quick sort: %f seconds, %f%%\n", (quicksort_end_time - quicksort_start_time), (quicksort_end_time - quicksort_start_time) * 100 / (bucketsort_end_time - bucketsort_start_time));
+    printf("%% Time taken for bucket merge: %f seconds, %f%%\n", (merge_end_time - merge_start_time), (merge_end_time - merge_start_time) * 100 / (bucketsort_end_time - bucketsort_start_time));
+    printf("Total time taken: %f seconds\n\n", (bucketsort_end_time - bucketsort_start_time));
 
     // Free allocated memory in the array
     free(array_data->array);

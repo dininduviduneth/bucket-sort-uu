@@ -2,19 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <omp.h>
 #include <sys/time.h>
 
 // helpers
 #include "helpers.h"
 
-void generate_uniform_array(double min, double max, double numbers[], int array_length) {
+// Change the VERSION to 2 to check the median-of-three pivot selection strategy
+#define VERSION 1
+
+void generate_uniform_array(double min, double max, double *numbers, int array_length) {
     for (int i = 0; i < array_length; i++) {
         double random_value = ((double)rand() / RAND_MAX) * (max - min) + min;
         numbers[i] = random_value;
     }
 }
 
-void generate_normal_array(double min, double max, double numbers[], int array_length) {
+void generate_normal_array(double min, double max, double *numbers, int array_length) {
     double mean = min + (max - min) / 2;
     double stdev = (max - min) / 6;
     for(int i = 0; i < array_length; i++) {
@@ -27,7 +31,7 @@ void generate_normal_array(double min, double max, double numbers[], int array_l
     }
 }
 
-void generate_exponential_array(double min, double max, double numbers[], int array_length) {
+void generate_exponential_array(double min, double max, double *numbers, int array_length) {
     double lambda = 1 / (max - min);
 
     for(int i = 0; i < array_length; i++) {
@@ -101,10 +105,11 @@ void read_file(char *input_path, ArrayData *array_data)
 }
 
 BucketData *bucket_split(ArrayData *array_data, double min_val, double max_val, int bucket_count) {
+    double bucket_count_recip = 1 / ((double)bucket_count);
     BucketData *bucket_data = malloc(sizeof(BucketData));
 
-    double bucket_length = (max_val - min_val) / bucket_count;
-    int elements_per_bucket = (array_data->array_size / bucket_count) + 1;
+    double bucket_length = (max_val - min_val) * bucket_count_recip;
+    int elements_per_bucket = (array_data->array_size * bucket_count_recip) + 1;
 
     // Creating an array of buckets
     double **buckets = (double **)malloc(bucket_count * sizeof(double *));
@@ -113,7 +118,7 @@ BucketData *bucket_split(ArrayData *array_data, double min_val, double max_val, 
 
     // Assign the elements per bucket
     for (int i = 0; i < bucket_count; i++) {
-        bucket_limit[i] = elements_per_bucket;
+        bucket_limit[i] = elements_per_bucket; // Initially we assign the same number of elements for each bucket
         bucket_filled_count[i] = 0;
     }
 
@@ -122,18 +127,23 @@ BucketData *bucket_split(ArrayData *array_data, double min_val, double max_val, 
     }
 
     // Send values to buckets
+    double bucket_length_recip = 1 / ((double)bucket_length);
     for(int i = 0; i < array_data->array_size; i++) {
-        int target_bucket_id = (array_data->array[i] - min_val) / bucket_length;
+        int target_bucket_id = (array_data->array[i] - min_val) * bucket_length_recip;
 
+        // To make the max element fall in to the last bucket
         if(target_bucket_id == bucket_count) {
             target_bucket_id--;
         }
 
+        // If the a bucket is full, we reallocate the bucket to fill more
         if(bucket_filled_count[target_bucket_id] >= bucket_limit[target_bucket_id]) {
-            bucket_limit[target_bucket_id] += (elements_per_bucket / bucket_count);
+            bucket_limit[target_bucket_id] += (elements_per_bucket * bucket_count_recip);
             buckets[target_bucket_id] = (double *)realloc(buckets[target_bucket_id], bucket_limit[target_bucket_id] * sizeof(double));
+            printf("Reallocation had to run for bucket: %d\n", target_bucket_id);
         }
 
+        // Assign the value from the array to the selected position in the selected bucket
         buckets[target_bucket_id][bucket_filled_count[target_bucket_id]] = array_data->array[i];
         bucket_filled_count[target_bucket_id]++;
     }
@@ -149,7 +159,32 @@ void quicksort(double *arr, int start_index, int end_index) {
         return;
     }
 
+    #if VERSION == 1
     int pivot_index = start_index + (end_index - start_index) / 2;
+
+    #elif VERSION == 2
+    int pivot_index;
+    int middle_index = start_index + (end_index - start_index) / 2;
+
+    if (arr[start_index] < arr[middle_index]) {
+        if (arr[middle_index] < arr[end_index]) {
+            pivot_index = middle_index;
+        } else if (arr[start_index] < arr[end_index]) {
+            pivot_index = end_index;
+        } else {
+            pivot_index = start_index;
+        }
+    } else {
+        if (arr[start_index] < arr[end_index]) {
+            pivot_index = start_index;
+        } else if (arr[middle_index] < arr[end_index]) {
+            pivot_index = end_index;
+        } else {
+            pivot_index = middle_index;
+        }
+    }
+    #endif
+
     double pivot = arr[pivot_index];
 
     int i = start_index;
@@ -208,6 +243,45 @@ void merge_buckets(BucketData *bucket_data, ArrayData *array_data, int bucket_co
         printf("Merged all buckets to the array!\n");
     } else {
         printf("There was an error in merging! Last write point: %d\n", array_write_pointer);
+    }
+}
+
+void merge_buckets_parallel(BucketData *bucket_data, ArrayData *array_data, int bucket_count) {
+    // Check if original array size and total of bucket item count are matching
+    int total_numbers_in_buckets = 0;
+    for(int i = 0; i < bucket_count; i++) {
+        total_numbers_in_buckets += bucket_data->bucket_filled_count[i];
+        printf("Numbers in bucket %d: %d\n", i, bucket_data->bucket_filled_count[i]);
+    }
+    printf("Total numbers in buckets: %d\n", total_numbers_in_buckets);
+    printf("Total numbers in array: %d\n", array_data->array_size);
+
+    if(total_numbers_in_buckets != array_data->array_size) {
+        printf("Count of numbers in the array and all buckets doesn't match, something has gone wrong!\n");
+        return;
+    }
+
+    int start_bucket_index[bucket_count];
+    int end_bucket_index[bucket_count];
+
+    for(int i = 0; i < bucket_count; i++) {
+        if(i == 0) {
+            start_bucket_index[i] = 0;
+            end_bucket_index[i] = bucket_data->bucket_filled_count[i];
+        } else {
+            start_bucket_index[i] = start_bucket_index[i - 1] + bucket_data->bucket_filled_count[i - 1];
+            end_bucket_index[i] = end_bucket_index[i - 1] + bucket_data->bucket_filled_count[i];
+        }
+
+        // Use the below code for varification
+        // printf("Index: %d --> [%d, %d]\n", i, start_bucket_index[i], end_bucket_index[i]);
+    }
+
+    #pragma omp parallel for num_threads(bucket_count)
+    for(int i = 0; i < bucket_count; i++) {
+        for(int j = start_bucket_index[i]; j < end_bucket_index[i]; j++) {
+            array_data->array[j] = bucket_data->buckets[i][j - start_bucket_index[i]];
+        }
     }
 }
 
