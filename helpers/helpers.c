@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <omp.h>
 #include <sys/time.h>
 
 // helpers
@@ -242,6 +243,45 @@ void merge_buckets(BucketData *bucket_data, ArrayData *array_data, int bucket_co
         printf("Merged all buckets to the array!\n");
     } else {
         printf("There was an error in merging! Last write point: %d\n", array_write_pointer);
+    }
+}
+
+void merge_buckets_parallel(BucketData *bucket_data, ArrayData *array_data, int bucket_count) {
+    // Check if original array size and total of bucket item count are matching
+    int total_numbers_in_buckets = 0;
+    for(int i = 0; i < bucket_count; i++) {
+        total_numbers_in_buckets += bucket_data->bucket_filled_count[i];
+        printf("Numbers in bucket %d: %d\n", i, bucket_data->bucket_filled_count[i]);
+    }
+    printf("Total numbers in buckets: %d\n", total_numbers_in_buckets);
+    printf("Total numbers in array: %d\n", array_data->array_size);
+
+    if(total_numbers_in_buckets != array_data->array_size) {
+        printf("Count of numbers in the array and all buckets doesn't match, something has gone wrong!\n");
+        return;
+    }
+
+    int start_bucket_index[bucket_count];
+    int end_bucket_index[bucket_count];
+
+    for(int i = 0; i < bucket_count; i++) {
+        if(i == 0) {
+            start_bucket_index[i] = 0;
+            end_bucket_index[i] = bucket_data->bucket_filled_count[i];
+        } else {
+            start_bucket_index[i] = start_bucket_index[i - 1] + bucket_data->bucket_filled_count[i - 1];
+            end_bucket_index[i] = end_bucket_index[i - 1] + bucket_data->bucket_filled_count[i];
+        }
+
+        // Use the below code for varification
+        // printf("Index: %d --> [%d, %d]\n", i, start_bucket_index[i], end_bucket_index[i]);
+    }
+
+    #pragma omp parallel for num_threads(bucket_count)
+    for(int i = 0; i < bucket_count; i++) {
+        for(int j = start_bucket_index[i]; j < end_bucket_index[i]; j++) {
+            array_data->array[j] = bucket_data->buckets[i][j - start_bucket_index[i]];
+        }
     }
 }
 

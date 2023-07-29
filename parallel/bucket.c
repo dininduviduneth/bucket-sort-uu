@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
 
     /* START - Merging buckets to original array */
     double merge_start_time = omp_get_wtime();
-    merge_buckets(bucket_data, array_data, bucket_count);
+    merge_buckets_parallel(bucket_data, array_data, bucket_count);
     double merge_end_time = omp_get_wtime();
     /* END - Merging buckets to original array */
     double bucketsort_end_time = omp_get_wtime();
