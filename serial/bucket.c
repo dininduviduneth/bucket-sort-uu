@@ -7,16 +7,16 @@
 
 int main(int argc, char *argv[]) {
 
-    int bucket_count = 8;
     /* Validate if the user entered the correct arguments */
-    if (argc != 2)
+    if (argc != 3)
     {
         printf("Incorrect number of arguments!\n");
-        printf("Usage: %s input_path\n", argv[0]);
+        printf("Usage: %s input_path bucket_count\n", argv[0]);
         return 0;
     }
 
     char *input_path = argv[1];
+    int bucket_count = atoi(argv[2]);
 
     ArrayData *array_data = malloc(sizeof(ArrayData));
     if (array_data == NULL)

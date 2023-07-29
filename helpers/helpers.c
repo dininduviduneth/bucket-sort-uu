@@ -277,7 +277,7 @@ void merge_buckets_parallel(BucketData *bucket_data, ArrayData *array_data, int 
         // printf("Index: %d --> [%d, %d]\n", i, start_bucket_index[i], end_bucket_index[i]);
     }
 
-    #pragma omp parallel for num_threads(bucket_count)
+    #pragma omp parallel for schedule(static, 1) num_threads(bucket_count)
     for(int i = 0; i < bucket_count; i++) {
         for(int j = start_bucket_index[i]; j < end_bucket_index[i]; j++) {
             array_data->array[j] = bucket_data->buckets[i][j - start_bucket_index[i]];
