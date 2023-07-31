@@ -30,12 +30,14 @@ int main(int argc, char *argv[]) {
     read_file(input_path, array_data);
 
     // PRINT LOADED ARRAY
-    // for(int i = 0; i < array_data->array_size; i++) {
-    //     printf("%f ", array_data->array[i]);
-    // }
-    // printf("\n\n");
+    /* 
+    for(int i = 0; i < array_data->array_size; i++) {
+        printf("%f ", array_data->array[i]);
+    }
+    printf("\n\n");
 
-    // printf("Array size is: %d\n", array_data->array_size);
+    printf("Array size is: %d\n", array_data->array_size);
+    */
 
     double bucketsort_start_time = omp_get_wtime();
     /* START - Identifying the min and max values of the array */
