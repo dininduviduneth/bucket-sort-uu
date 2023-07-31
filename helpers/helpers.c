@@ -138,9 +138,9 @@ BucketData *bucket_split(ArrayData *array_data, double min_val, double max_val, 
 
         // If the a bucket is full, we reallocate the bucket to fill more
         if(bucket_filled_count[target_bucket_id] >= bucket_limit[target_bucket_id]) {
-            bucket_limit[target_bucket_id] += (elements_per_bucket * bucket_count_recip);
-            buckets[target_bucket_id] = (double *)realloc(buckets[target_bucket_id], bucket_limit[target_bucket_id] * sizeof(double));
+            bucket_limit[target_bucket_id] += (elements_per_bucket * 0.2); // We set the reallocation of their bucket to 20% more
             printf("Reallocation had to run for bucket: %d\n", target_bucket_id);
+            buckets[target_bucket_id] = (double *)realloc(buckets[target_bucket_id], bucket_limit[target_bucket_id] * sizeof(double));
         }
 
         // Assign the value from the array to the selected position in the selected bucket
@@ -277,7 +277,7 @@ void merge_buckets_parallel(BucketData *bucket_data, ArrayData *array_data, int 
         // printf("Index: %d --> [%d, %d]\n", i, start_bucket_index[i], end_bucket_index[i]);
     }
 
-    #pragma omp parallel for schedule(static, 1) num_threads(bucket_count)
+    #pragma omp parallel for schedule(dynamic, 1) num_threads(bucket_count)
     for(int i = 0; i < bucket_count; i++) {
         for(int j = start_bucket_index[i]; j < end_bucket_index[i]; j++) {
             array_data->array[j] = bucket_data->buckets[i][j - start_bucket_index[i]];
