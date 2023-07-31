@@ -35,11 +35,13 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    // PRINT GENERATED ARRAY
-    // for(int i = 0; i < array_length; i++) {
-    //     printf("%f ", numbers[i]);
-    // }
-    // printf("\n");
+    /*
+    PRINT GENERATED ARRAY
+    for(int i = 0; i < array_length; i++) {
+        printf("%f ", numbers[i]);
+    }
+    printf("\n");
+    */
 
     printf("Array size is: %d\n", array_length);
 
